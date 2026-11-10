@@ -1,5 +1,7 @@
 import { ChartColumnIncreasing, MonitorSmartphone, Target, Workflow, type LucideIcon } from 'lucide-react'
+import type { CSSProperties } from 'react'
 import { useLanguage } from '../i18n/LanguageContext'
+import { asset } from '../lib/asset'
 
 /**
  * One icon per service, in the order of `services` in content/en.ts and es.ts:
@@ -15,7 +17,7 @@ export default function AboutSection() {
     <section id="about" aria-labelledby="about-title" className="relative isolate overflow-hidden bg-void">
       {/* Wireframe terrain mesh in both themes: decorative, softened so the text leads. */}
       <div aria-hidden="true" className="about-bg-blur">
-        <div className="about-bg" />
+        <div className="about-bg" style={{ '--about-art': `url('${asset('images/about-mesh.svg')}')` } as CSSProperties} />
       </div>
 
       <div className="page-wrap relative py-24 sm:py-32 lg:py-36">

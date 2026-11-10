@@ -1,7 +1,8 @@
 import { brandName } from '../../content/site'
 import { useLanguage } from '../../i18n/LanguageContext'
+import { asset } from '../../lib/asset'
 
-const LOGO_SRC = '/images/logo.webp'
+const LOGO_SRC = asset('images/logo.webp')
 
 export default function Logo({ className = 'h-8' }: { className?: string }) {
   const { t } = useLanguage()

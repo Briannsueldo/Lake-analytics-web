@@ -1,5 +1,6 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { useInView } from '../hooks/useInView'
+import { asset } from '../lib/asset'
 import TelemetryOverlay from './TelemetryOverlay'
 import SectionHeading from './ui/SectionHeading'
 
@@ -23,8 +24,8 @@ export default function MotorsportServices() {
 
         <div ref={ref} className="theme-dark relative isolate aspect-[3/2] overflow-hidden bg-surface sm:aspect-[16/9] lg:aspect-[21/9]">
           <img
-            src="/images/f1-1600.webp"
-            srcSet="/images/f1-800.webp 800w, /images/f1-1600.webp 1600w, /images/f1-2400.webp 1920w"
+            src={asset('images/f1-1600.webp')}
+            srcSet={`${asset('images/f1-800.webp')} 800w, ${asset('images/f1-1600.webp')} 1600w, ${asset('images/f1-2400.webp')} 1920w`}
             sizes="(min-width: 1280px) 1200px, 100vw"
             alt={motorsport.imageAlt}
             width={1920}

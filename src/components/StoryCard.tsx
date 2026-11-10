@@ -1,6 +1,7 @@
 import { Plus } from 'lucide-react'
 import { useId, useState } from 'react'
 import type { StoryMeta } from '../content/site'
+import { asset } from '../lib/asset'
 
 const handles = ['top-3 left-3', 'top-3 right-3', 'bottom-3 left-3', 'bottom-3 right-3']
 
@@ -28,8 +29,8 @@ export default function StoryCard({ story, summary, detailsLabel, index, feature
       }`}
     >
       <img
-        src={`/images/${story.image}-800.webp`}
-        srcSet={`/images/${story.image}-800.webp 800w, /images/${story.image}-1600.webp 1600w`}
+        src={asset(`images/${story.image}-800.webp`)}
+        srcSet={`${asset(`images/${story.image}-800.webp`)} 800w, ${asset(`images/${story.image}-1600.webp`)} 1600w`}
         sizes={featured ? '(min-width: 1280px) 1200px, 100vw' : '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw'}
         alt=""
         loading="lazy"

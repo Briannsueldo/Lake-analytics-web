@@ -1,5 +1,6 @@
 import { brands, type Brand } from '../content/site'
 import { useLanguage } from '../i18n/LanguageContext'
+import { asset } from '../lib/asset'
 
 /** Equal visual weight: every logo gets about the same ink area, within a height range. */
 const LOGO_AREA = 4200
@@ -13,7 +14,7 @@ function BrandRun({ hidden = false }: { hidden?: boolean }) {
         return (
           <li key={brand.id} className="shrink-0">
             <img
-              src={`/images/brands/${brand.id}.webp`}
+              src={asset(`images/brands/${brand.id}.webp`)}
               alt={hidden ? '' : brand.name}
               width={Math.round((brand.width / brand.height) * height)}
               height={height}

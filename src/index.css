@@ -438,7 +438,7 @@
     inset: 0;
     background: var(--color-ink);
     opacity: 0.36;
-    --about-art: url('/images/about-mesh.svg');
+    /* --about-art is set by AboutSection, so the URL follows the deploy base. */
     --about-edges: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
     -webkit-mask-image: var(--about-art), var(--about-edges);
     mask-image: var(--about-art), var(--about-edges);
