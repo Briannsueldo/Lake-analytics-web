@@ -1,0 +1,538 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+
+  /* Theme-aware: values are switched in the base layer below. */
+  --color-void: #06080b;
+  --color-ink: #f4f3ef;
+  --color-surface: #0b0e12;
+  --color-line: rgb(255 255 255 / 0.09);
+  --color-accent: #3fb0e3;
+  --color-danger: #ff9b8a;
+
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ui: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --animate-rise: rise 1s var(--ease-settle) both;
+  --animate-dawn: dawn 1.8s var(--ease-settle) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+
+  @keyframes spin-in {
+    from {
+      opacity: 0;
+      transform: rotate(-60deg) scale(0.7);
+    }
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes dawn {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(8%) scale(0.94);
+    }
+  }
+}
+
+@utility page-wrap {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+/*
+ * Title type scale (ui-ux-pro-max: one modular scale, weight carries hierarchy, tight tracking
+ * only on display sizes, balanced wrapping). Geist semibold sets the titles; Instrument Serif
+ * italic is kept as the accent for emphasised words.
+ */
+@utility title-display {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(2.75rem, min(8.6vw, 13svh), 6.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+@utility title-section {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(2.25rem, 4.4vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+@utility title-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Full-bleed gutters for the footer, which spans the whole window. */
+@utility edge-pad {
+  padding-inline: clamp(1.25rem, 4vw, 4rem);
+}
+
+@layer base {
+  /*
+   * Palette: the hues that carry the brand. Default is the Lake Analytics logo
+   * (azure + navy). The previous ember/teal palette stays available for a visual
+   * comparison: set data-palette="ember" on <html>.
+   */
+  :root {
+    --accent-on-dark: #3fb0e3;
+    --accent-on-light: #1d5bab;
+    --trace-2: rgb(196 220 244 / 0.8);
+    --burst: conic-gradient(
+      from -90deg at 50% 100%,
+      rgb(26 66 124 / 0.95) 0deg,
+      rgb(184 204 222 / 0.9) 17deg,
+      rgb(64 98 138 / 0.72) 32deg,
+      rgb(14 20 40 / 0.2) 47deg,
+      rgb(58 168 220 / 0.98) 64deg,
+      rgb(36 92 198 / 1) 75deg,
+      rgb(214 238 252 / 1) 87deg,
+      rgb(228 242 250 / 0.92) 97deg,
+      rgb(56 136 200 / 0.92) 117deg,
+      rgb(30 76 148 / 0.85) 148deg,
+      rgb(20 46 98 / 0.8) 180deg,
+      transparent 180deg
+    );
+    --burst-core: radial-gradient(circle, rgb(246 250 253) 0%, rgb(190 226 246 / 0.8) 26%, transparent 62%);
+    --tint-a: rgb(30 70 140 / 0.32);
+    --tint-b: rgb(58 168 220 / 0.2);
+  }
+
+  :root[data-palette='ember'] {
+    --accent-on-dark: #ff6a4d;
+    --accent-on-light: #d9472b;
+    --trace-2: rgb(95 195 207 / 0.75);
+    --burst: conic-gradient(
+      from -90deg at 50% 100%,
+      rgb(44 92 112 / 0.95) 0deg,
+      rgb(190 196 206 / 0.9) 17deg,
+      rgb(92 106 124 / 0.72) 32deg,
+      rgb(16 20 30 / 0.2) 47deg,
+      rgb(255 96 56 / 0.98) 64deg,
+      rgb(232 50 40 / 1) 75deg,
+      rgb(255 214 196 / 1) 87deg,
+      rgb(255 236 228 / 0.92) 97deg,
+      rgb(66 150 166 / 0.92) 117deg,
+      rgb(42 132 154 / 0.85) 148deg,
+      rgb(20 84 104 / 0.8) 180deg,
+      transparent 180deg
+    );
+    --burst-core: radial-gradient(circle, rgb(255 250 245) 0%, rgb(255 212 188 / 0.8) 26%, transparent 62%);
+    --tint-a: rgb(47 143 157 / 0.28);
+    --tint-b: rgb(255 106 77 / 0.2);
+  }
+
+  /* Page ground, set once per theme; dark islands (.theme-dark) do not change it. */
+  :root {
+    --color-page: #06080b;
+    --color-accent: var(--accent-on-dark);
+    --logo-mark-filter: brightness(1.35) saturate(1.1);
+    --logo-word-filter: brightness(0) invert(0.95);
+    color-scheme: dark;
+  }
+
+  /* Warm paper whites: never pure #fff. */
+  :root[data-theme='light'] {
+    --color-page: #f4f2ee;
+    --color-void: #f4f2ee;
+    --color-ink: #13161b;
+    --color-surface: #e9e6e0;
+    --color-line: rgb(19 22 27 / 0.12);
+    --color-accent: var(--accent-on-light);
+    --logo-mark-filter: none;
+    --logo-word-filter: none;
+    color-scheme: light;
+  }
+
+  /* Photo cards, the telemetry panel and the footer stay dark in both themes. */
+  .theme-dark {
+    --color-void: #06080b;
+    --color-ink: #f4f3ef;
+    --color-surface: #0b0e12;
+    --color-line: rgb(255 255 255 / 0.09);
+    --color-accent: var(--accent-on-dark);
+    --logo-mark-filter: brightness(1.35) saturate(1.1);
+    --logo-word-filter: brightness(0) invert(0.95);
+    color: var(--color-ink);
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--color-page);
+  }
+
+  body {
+    background: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 60;
+    padding: 0.75rem 1rem;
+    background: var(--color-ink);
+    color: var(--color-void);
+    font-size: 0.875rem;
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+
+  /* The logo is one raster: its mark and wordmark are tuned separately for dark grounds. */
+  .logo-mark {
+    clip-path: inset(0 59.4% 0 0);
+    filter: var(--logo-mark-filter);
+  }
+
+  .logo-word {
+    clip-path: inset(0 0 0 40.6%);
+    filter: var(--logo-word-filter);
+  }
+
+  /* Film grain shared by the hero burst and the photo panels. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+  }
+
+  .blueprint-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--color-ink) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 3.5%, transparent) 1px, transparent 1px);
+    background-size: calc(100% / 6) 74px;
+    mask-image: linear-gradient(to bottom, black 55%, transparent);
+  }
+
+  /* Fan of light rising from behind the services strip. Angles start at the left horizon. */
+  .burst-rays {
+    position: absolute;
+    left: 50%;
+    bottom: -2rem;
+    width: max(100rem, 135%);
+    aspect-ratio: 2 / 1;
+    transform: translateX(-50%);
+    background: var(--burst);
+    filter: blur(20px);
+    mask-image: radial-gradient(ellipse 64% 74% at 50% 100%, black 14%, rgb(0 0 0 / 0.62) 44%, transparent 80%);
+  }
+
+  .burst-core {
+    position: absolute;
+    left: 50%;
+    bottom: -12rem;
+    width: min(38rem, 110vw);
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    background: var(--burst-core);
+    filter: blur(10px);
+  }
+
+  /* Keeps the copy legible where it crosses the burst. */
+  .copy-veil {
+    background: radial-gradient(
+      ellipse 48% 40% at 50% 42%,
+      color-mix(in srgb, var(--color-void) 70%, transparent),
+      color-mix(in srgb, var(--color-void) 32%, transparent) 62%,
+      transparent 100%
+    );
+  }
+
+  /* On paper the fan reads as dawn light: lighter, and the cool stops lifted. */
+  [data-theme='light'] .burst-rays {
+    opacity: 0.78;
+    filter: blur(26px) saturate(1.1);
+  }
+
+  [data-theme='light'] .burst-core {
+    opacity: 0.85;
+  }
+
+  .footer-sky {
+    background: #000;
+  }
+
+  .link-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0 1px;
+    transition:
+      background-size 240ms var(--ease-ui),
+      color 150ms var(--ease-ui);
+  }
+
+  .link-draw:hover,
+  .link-draw:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Story photographs: pulled toward the brand palette, then read through a halftone edge. */
+  .story-photo {
+    filter: saturate(0.7) contrast(1.06) brightness(0.8);
+    transition:
+      transform 600ms var(--ease-settle),
+      filter 400ms var(--ease-ui);
+  }
+
+  .story-tint {
+    background:
+      linear-gradient(to top, rgb(6 8 11 / 0.92), rgb(6 8 11 / 0.15) 46%, transparent 70%),
+      linear-gradient(115deg, var(--tint-a), transparent 45%, var(--tint-b));
+  }
+
+  .story-halftone {
+    background-image: radial-gradient(circle, rgb(244 243 239 / 0.55) 0.9px, transparent 1.4px);
+    background-size: 5px 5px;
+    mask-image: linear-gradient(100deg, transparent 72%, black);
+    opacity: 0.45;
+  }
+
+  .story-scrim {
+    background: linear-gradient(to top, rgb(6 8 11 / 0.94) 10%, rgb(6 8 11 / 0.7) 55%, rgb(6 8 11 / 0.35));
+  }
+
+  .motorsport-photo {
+    filter: saturate(0.85) contrast(1.08) brightness(0.78);
+  }
+
+  .motorsport-tint {
+    background:
+      linear-gradient(to bottom, rgb(6 8 11 / 0.55), transparent 28%, transparent 62%, rgb(6 8 11 / 0.75)),
+      linear-gradient(90deg, rgb(6 8 11 / 0.35), transparent 30%, transparent 75%, var(--tint-b));
+  }
+
+  .motorsport-scanlines {
+    background-image: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.035) 0 1px, transparent 1px 4px);
+    mix-blend-mode: overlay;
+  }
+
+  /* Telemetry overlay: the tracking box locks on, then the traces draw left to right. */
+  .telemetry {
+    font-family: var(--font-mono);
+  }
+
+  .telemetry-box {
+    fill: none;
+    stroke: rgb(244 243 239 / 0.22);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 4 6;
+  }
+
+  .telemetry-corner {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .telemetry-label {
+    fill: rgb(244 243 239 / 0.85);
+    font-size: 17px;
+    letter-spacing: 0.16em;
+  }
+
+  .telemetry-sector line {
+    stroke: rgb(244 243 239 / 0.3);
+    stroke-dasharray: 3 7;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .telemetry-trace {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .telemetry-trace--secondary {
+    stroke: var(--trace-2);
+  }
+
+  .telemetry-box,
+  .telemetry-tag,
+  .telemetry-sector {
+    transition: opacity 500ms var(--ease-ui) 200ms;
+  }
+
+  .telemetry-corner {
+    transition:
+      opacity 400ms var(--ease-ui),
+      transform 700ms var(--ease-settle);
+  }
+
+  .telemetry-trace {
+    transition: stroke-dashoffset 1.8s var(--ease-settle) 450ms;
+  }
+
+  .telemetry[data-active='false'] :is(.telemetry-box, .telemetry-tag, .telemetry-sector, .telemetry-corner) {
+    opacity: 0;
+  }
+
+  .telemetry[data-active='false'] .telemetry-corner {
+    transform: scale(1.12);
+  }
+
+  .telemetry[data-active='false'] .telemetry-trace {
+    stroke-dashoffset: 1;
+  }
+
+  /*
+   * About background (scripts/generate-about-backgrounds.mjs): a wireframe terrain mesh used as a
+   * mask tinted with the theme's ink (dark lines on paper, light lines on dark), faded at the
+   * section's top and bottom edges so it meets the neighbouring sections softly.
+   */
+  .about-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--color-ink);
+    opacity: 0.36;
+    --about-art: url('/images/about-mesh.svg');
+    --about-edges: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+    -webkit-mask-image: var(--about-art), var(--about-edges);
+    mask-image: var(--about-art), var(--about-edges);
+    -webkit-mask-size: cover, 100% 100%;
+    mask-size: cover, 100% 100%;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  [data-theme='light'] .about-bg {
+    opacity: 0.3;
+  }
+
+  /* The blur sits on a wrapper: a filter on the masked layer itself runs before the mask. */
+  .about-bg-blur {
+    position: absolute;
+    inset: 0;
+    filter: blur(2.5px);
+  }
+
+  /* Brand carousel: two identical runs scroll by half their width, so the loop is seamless. Always moving. */
+  .brand-track {
+    animation: marquee 48s linear infinite;
+  }
+
+  .brand-viewport {
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  /* Logos arrive in mixed greys; unify them, and invert on dark so dark lettering stays legible. */
+  .brand-logo {
+    filter: grayscale(1) invert(1) brightness(1.15);
+    opacity: 0.6;
+    transition: opacity 150ms var(--ease-ui);
+  }
+
+  [data-theme='light'] .brand-logo {
+    filter: grayscale(1) contrast(1.1);
+    opacity: 0.65;
+  }
+
+  .brand-logo:hover {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brand-track {
+      transform: none;
+    }
+  }
+
+  /* Contact fields: underlined, as on a form sheet. */
+  .field-input {
+    width: 100%;
+    min-height: 3rem;
+    border-bottom: 1px solid var(--color-line);
+    background: transparent;
+    padding-block: 0.75rem;
+    font-size: 1rem;
+    color: var(--color-ink);
+    transition: border-color 150ms var(--ease-ui);
+  }
+
+  .field-input::placeholder {
+    color: color-mix(in srgb, var(--color-ink) 35%, transparent);
+  }
+
+  .field-input:hover {
+    border-color: color-mix(in srgb, var(--color-ink) 35%, transparent);
+  }
+
+  .field-input:focus {
+    outline: none;
+    border-color: var(--color-ink);
+  }
+
+  .field-input[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
